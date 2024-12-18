@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Content Editor</title>
+</head>
+<body>
+    <h1>Manage Website Content</h1>
+    <div>
+        <h2>Current Content</h2>
+        <pre id="jsonDisplay">Loading...</pre>
+    </div>
+    <div>
+        <h2>Add New Content</h2>
+        <form id="contentForm">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required><br><br>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea><br><br>
+            <button type="submit">Add Content</button>
+        </form>
+    </div>
+    <div>
+        <h2>Actions</h2>
+        <button id="downloadJson">Download Updated JSON</button>
+    </div>
+
+    <script>
+        // Example existing JSON content
+        let contentData = [
+            { "title": "Sample 1", "description": "This is a sample description." },
+            { "title": "Sample 2", "description": "Another sample description." }
+        ];
+
+        // Display the JSON content
+        const jsonDisplay = document.getElementById('jsonDisplay');
+        const updateDisplay = () => {
+            jsonDisplay.textContent = JSON.stringify(contentData, null, 4);
+        };
+        updateDisplay();
+
+        // Handle form submission
+        const form = document.getElementById('contentForm');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newEntry = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value
+            };
+            contentData.push(newEntry); // Add the new entry
+            updateDisplay(); // Update displayed JSON
+            form.reset(); // Clear the form
+            alert("Content added successfully!");
+        });
+
+        // Download updated JSON file
+        const downloadJson = document.getElementById('downloadJson');
+        downloadJson.addEventListener('click', () => {
+            const blob = new Blob([JSON.stringify(contentData, null, 4)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'website-content.json';
+            a.click();
+            URL.revokeObjectURL(url); // Cleanup
+        });
+    </script>
+</body>
+</html>
